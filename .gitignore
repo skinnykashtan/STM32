@@ -1,0 +1,63 @@
+# Build folders
+build/
+cmake-build-*/
+Debug/
+Release/
+RelWithDebInfo/
+MinSizeRel/
+
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+compile_commands.json
+
+# Ninja
+.ninja_deps
+.ninja_log
+build.ninja
+
+# STM32CubeIDE / Eclipse
+.project
+.cproject
+.settings/
+.metadata/
+Debug*/
+Release*/
+
+# Keil / IAR / other IDE generated files
+*.uvguix.*
+*.uvoptx
+*.uvprojx
+*.dep
+*.ewp
+*.eww
+*.ewd
+*.ewt
+*.map
+*.lst
+
+# Object / binary files
+*.o
+*.obj
+*.elf
+*.bin
+*.hex
+*.map
+*.list
+*.lst
+*.d
+*.su
+
+# Logs
+*.log
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+.idea/
