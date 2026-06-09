@@ -9,5 +9,6 @@
 
 void sendDebugMessage(LedMode led_mode);
 void uartPrint(const char* text);
+void uartPoll();
 
 #endif //AUTOPILOT_UARTUTILS_H

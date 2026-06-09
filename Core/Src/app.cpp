@@ -14,6 +14,10 @@ extern "C" {
 Led led(LD2_GPIO_Port, LD2_Pin);
 LedMode led_mode = LedMode::Off;
 
+LedMode getLedMode() {
+    return led_mode;
+}
+
 volatile uint32_t lastCallback{};
 volatile bool clickedButton = false;
 

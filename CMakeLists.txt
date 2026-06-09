@@ -36,7 +36,8 @@ add_executable(${CMAKE_PROJECT_NAME}
         Core/Src/app.cpp
         Core/Src/Led.cpp
         Core/Src/LedMode.cpp
-        Core/Src/UartUtils.cpp)
+        Core/Src/UartUtils.cpp
+        Core/Src/Terminal.cpp)
 
 # Add STM32CubeMX generated sources
 add_subdirectory(cmake/stm32cubemx)

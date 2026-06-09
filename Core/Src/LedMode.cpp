@@ -50,18 +50,7 @@ void updateLed(LedMode led_mode, Led& led, uint32_t& last_time) {
             }
             break;
         case LedMode::Message:
-            if (HAL_UART_Receive(&huart2, &rxByte, 1, 0) == HAL_OK) {
-                if (rxByte == '\r' || rxByte == '\n') {
-                    rxBuffer[index] = '\0';
-                    uartPrint("\r\n");
-                    index = 0;
-                } else if (index < sizeof(rxBuffer) - 1) {
-                    rxBuffer[index] = rxByte;
-                    index++;
-
-                    HAL_UART_Transmit(&huart2, &rxByte, 1, 100);
-                }
-            }
+            uartPoll();
             break;
         default:
             led.off();
