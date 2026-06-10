@@ -19,6 +19,10 @@ LedMode getLedMode() {
     return led_mode;
 }
 
+void setLedMode(LedMode mode) {
+    led_mode = mode;
+}
+
 volatile uint32_t lastCallback{};
 volatile bool clickedButton = false;
 
@@ -50,5 +54,5 @@ void app_loop(void) {
         sendDebugMessage(led_mode);
     }
 
-    updateLed(led_mode, led, last_time);
+    updateLed(led, last_time);
 }

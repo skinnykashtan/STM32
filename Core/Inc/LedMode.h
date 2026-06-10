@@ -14,7 +14,7 @@ enum class LedMode {
 
 const char* ledModeMapper(LedMode led_mode);
 
-void updateLed(LedMode led_mode, Led& led, uint32_t& last_time);
+void updateLed(Led& led, uint32_t& last_time);
 
 LedMode nextMode(LedMode current);
 

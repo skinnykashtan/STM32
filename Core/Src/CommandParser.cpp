@@ -5,6 +5,12 @@
 #include "LedMode.h"
 #include "UartUtils.h"
 
+void printLedMode() {
+    uartPrint("Current Mode: ");
+    uartPrint(ledModeMapper(getLedMode()));
+    uartPrint("\r\n");
+}
+
 void handleCommand(const char* command) {
     if (strcmp(command, "/help") == 0) {
         uartPrint("Available commands:\r\n");
@@ -17,9 +23,28 @@ void handleCommand(const char* command) {
         uartPrint("pong\r\n");
         uartPrint("> ");
     } else if (strcmp(command, "/mode") == 0) {
-        uartPrint("Current Mode: ");
-        uartPrint(ledModeMapper(getLedMode()));
-        uartPrint("\r\n");
+        printLedMode();
+        uartPrint("Switching modes:\r\n");
+        uartPrint("/mode off\r\n");
+        uartPrint("/mode on\r\n");
+        uartPrint("/mode slow\r\n");
+        uartPrint("/mode fast\r\n");
+        uartPrint("> ");
+    } else if (strcmp(command, "/mode off") == 0) {
+        setLedMode(LedMode::Off);
+        printLedMode();
+        uartPrint("> ");
+    } else if (strcmp(command, "/mode on") == 0) {
+        setLedMode(LedMode::On);
+        printLedMode();
+        uartPrint("> ");
+    } else if (strcmp(command, "/mode slow") == 0) {
+        setLedMode(LedMode::BlinkSlow);
+        printLedMode();
+        uartPrint("> ");
+    } else if (strcmp(command, "/mode fast") == 0) {
+        setLedMode(LedMode::BlinkFast);
+        printLedMode();
         uartPrint("> ");
     } else if (strcmp(command, "/uptime") == 0) {
         uint32_t uptimeSeconds = HAL_GetTick() / 1000;

@@ -7,5 +7,6 @@
 #include "LedMode.h"
 
 LedMode getLedMode();
+void setLedMode(LedMode mode);
 
 #endif //AUTOPILOT_APPSTATE_H

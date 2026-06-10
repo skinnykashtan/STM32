@@ -3,6 +3,8 @@
 //
 
 #include "LedMode.h"
+
+#include "AppState.h"
 #include "UartUtils.h"
 
 const char* ledModeMapper(LedMode led_mode) {
@@ -20,7 +22,7 @@ const char* ledModeMapper(LedMode led_mode) {
     return "Unknown";
 }
 
-void updateLed(LedMode led_mode, Led& led, uint32_t& last_time) {
+void updateLed(Led& led, uint32_t& last_time) {
     constexpr uint32_t intervalSlow = 1000;
     constexpr uint32_t intervalFast = 100;
     uint32_t now = HAL_GetTick();
@@ -28,7 +30,7 @@ void updateLed(LedMode led_mode, Led& led, uint32_t& last_time) {
     static uint8_t index=0;
     static char rxBuffer[64];
 
-    switch (led_mode) {
+    switch (getLedMode()) {
         case LedMode::Off:
             led.off();
             break;
