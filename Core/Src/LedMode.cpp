@@ -15,8 +15,6 @@ const char* ledModeMapper(LedMode led_mode) {
             return "Slow";
         case LedMode::BlinkFast:
             return "Fast";
-        case LedMode::Message:
-            return "Message receiver ON";
     }
 
     return "Unknown";
@@ -49,9 +47,6 @@ void updateLed(LedMode led_mode, Led& led, uint32_t& last_time) {
                 led.toggle();
             }
             break;
-        case LedMode::Message:
-            uartPoll();
-            break;
         default:
             led.off();
             sendDebugMessage(LedMode::Off);
@@ -68,8 +63,6 @@ LedMode nextMode(LedMode current) {
         case LedMode::BlinkSlow:
             return LedMode::BlinkFast;
         case LedMode::BlinkFast:
-            return LedMode::Message;
-        case LedMode::Message:
             return LedMode::Off;
     }
 

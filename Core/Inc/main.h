@@ -28,7 +28,6 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
-extern UART_HandleTypeDef huart2;
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */

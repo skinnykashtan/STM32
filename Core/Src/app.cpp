@@ -5,6 +5,7 @@
 #include "app.h"
 #include "Led.h"
 #include "LedMode.h"
+#include "Terminal.h"
 #include "UartUtils.h"
 
 extern "C" {
@@ -20,6 +21,7 @@ LedMode getLedMode() {
 
 volatile uint32_t lastCallback{};
 volatile bool clickedButton = false;
+volatile bool commandReady = false;
 
 extern "C" void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
     uint32_t now = HAL_GetTick();
@@ -36,9 +38,12 @@ void app_init(void) {
     HAL_Delay(200);
     HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
     last_time = HAL_GetTick();
+    terminalStartReceiveIT();
 }
 
 void app_loop(void) {
+
+    terminalProcess();
 
     if (clickedButton) {
         clickedButton = false;

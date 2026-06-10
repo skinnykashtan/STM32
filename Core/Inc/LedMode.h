@@ -9,8 +9,7 @@ enum class LedMode {
     Off,
     On,
     BlinkSlow,
-    BlinkFast,
-    Message
+    BlinkFast
 };
 
 const char* ledModeMapper(LedMode led_mode);

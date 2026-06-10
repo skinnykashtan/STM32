@@ -4,38 +4,65 @@
 #include <cstring>
 #include "AppState.h"
 #include "UartUtils.h"
+#include "CommandParser.h"
 
-void handleCommand(const char* command) {
-    if (strcmp(command, "/help") == 0) {
-        uartPrint("Available commands:\r\n");
-        uartPrint("/ping\r\n");
-        uartPrint("/mode\r\n");
-        uartPrint("/uptime\r\n");
-        uartPrint("/reset\r\n");
-        uartPrint("> ");
-    } else if (strcmp(command, "/ping") == 0) {
-        uartPrint("pong\r\n");
-        uartPrint("> ");
-    } else if (strcmp(command, "/mode") == 0) {
-        uartPrint("Current Mode: ");
-        uartPrint(ledModeMapper(getLedMode()));
-        uartPrint("\r\n");
-        uartPrint("> ");
-    } else if (strcmp(command, "/uptime") == 0) {
-        uint32_t uptimeSeconds = HAL_GetTick() / 1000;
+extern "C" UART_HandleTypeDef huart2;
 
-        char msg[64];
-        snprintf(msg, sizeof(msg), "Uptime: %lu s\r\n", static_cast<unsigned long>(uptimeSeconds));
+static void handleReceivedByte(uint8_t rxByte);
 
-        uartPrint(msg);
-        uartPrint("> ");
-    } else if (strcmp(command, "/reset") == 0) {
-        uartPrint("Resetting...\r\n");
-        HAL_Delay(100);
+static uint8_t rxByte;
 
-        NVIC_SystemReset();
+static char rxBuffer[64];
+static uint8_t rxIndex = 0;
+
+static volatile bool commandReady = false;
+static char commandBuffer[64];
+
+void terminalStartReceiveIT() {
+    HAL_UART_Receive_IT(&huart2, &rxByte, 1);
+}
+
+extern "C" void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart) {
+    if (huart->Instance == USART2) {
+        handleReceivedByte(rxByte);
+
+        HAL_UART_Receive_IT(&huart2, &rxByte, 1);
+    }
+}
+
+void terminalProcess() {
+    if (commandReady) {
+        commandReady = false;
+        handleCommand(commandBuffer);
+    }
+}
+
+static void handleReceivedByte(uint8_t rxByte) {
+    if (rxByte == '\r' || rxByte == '\n') {
+        rxBuffer[rxIndex] = '\0';
+
+        if (rxIndex > 0 && !commandReady) {
+            uartPrint("\r\n");
+            strncpy(commandBuffer, rxBuffer, sizeof(commandBuffer));
+            commandBuffer[sizeof(commandBuffer) - 1] = '\0';
+
+            commandReady = true;
+        }
+
+        rxIndex = 0;
+    } else if (rxByte == '\b' || rxByte == 127) {
+        if (rxIndex > 0) {
+            rxIndex--;
+
+            uartPrint("\b \b");
+        }
+    } else if (rxIndex < sizeof(rxBuffer) - 1) {
+        rxBuffer[rxIndex] = rxByte;
+        rxIndex++;
+
+        HAL_UART_Transmit(&huart2, &rxByte, 1, 100);
     } else {
-        uartPrint("Command not found. Try /help for more information.\r\n");
-        uartPrint("> ");
+        uartPrint("\r\nCommand too long\r\n");
+        rxIndex = 0;
     }
 }
