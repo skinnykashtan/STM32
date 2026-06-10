@@ -21,7 +21,6 @@ LedMode getLedMode() {
 
 volatile uint32_t lastCallback{};
 volatile bool clickedButton = false;
-volatile bool commandReady = false;
 
 extern "C" void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
     uint32_t now = HAL_GetTick();

@@ -10,13 +10,13 @@ extern "C" UART_HandleTypeDef huart2;
 
 static void handleReceivedByte(uint8_t rxByte);
 
-static uint8_t rxByte;
+static uint8_t rxByte{};
 
-static char rxBuffer[64];
-static uint8_t rxIndex = 0;
+static char rxBuffer[64]{};
+static uint8_t rxIndex{};
 
 static volatile bool commandReady = false;
-static char commandBuffer[64];
+static char commandBuffer[64]{};
 
 void terminalStartReceiveIT() {
     HAL_UART_Receive_IT(&huart2, &rxByte, 1);
