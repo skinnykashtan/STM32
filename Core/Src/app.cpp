@@ -25,6 +25,7 @@ void setLedMode(LedMode mode) {
 
 volatile uint32_t lastCallback{};
 volatile bool clickedButton = false;
+extern volatile bool uartOverflow;
 
 extern "C" void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
     uint32_t now = HAL_GetTick();
@@ -47,6 +48,10 @@ void app_init(void) {
 void app_loop(void) {
 
     terminalProcess();
+    if (uartOverflow) {
+        uartOverflow = false;
+        uartPrint("\r\nUART RX buffer overflow\r\n");
+    }
 
     if (clickedButton) {
         clickedButton = false;

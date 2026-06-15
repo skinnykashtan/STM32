@@ -5,10 +5,11 @@
 #include "AppState.h"
 #include "UartUtils.h"
 #include "CommandParser.h"
+#include "RingBuffer.h"
 
 extern "C" UART_HandleTypeDef huart2;
 
-static void handleReceivedByte(uint8_t rxByte);
+static void terminalProcessByte(uint8_t rxByte);
 
 static uint8_t rxByte{};
 
@@ -18,26 +19,36 @@ static uint8_t rxIndex{};
 static volatile bool commandReady = false;
 static char commandBuffer[64]{};
 
+RingBuffer ring_buffer;
+volatile bool uartOverflow = false;
+
 void terminalStartReceiveIT() {
     HAL_UART_Receive_IT(&huart2, &rxByte, 1);
 }
 
 extern "C" void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart) {
     if (huart->Instance == USART2) {
-        handleReceivedByte(rxByte);
+        if (!ring_buffer.push(rxByte)) {
+            uartOverflow = true;
+        }
 
         HAL_UART_Receive_IT(&huart2, &rxByte, 1);
     }
 }
 
 void terminalProcess() {
-    if (commandReady) {
-        commandReady = false;
-        handleCommand(commandBuffer);
+    uint8_t byte{};
+    while (ring_buffer.pop(byte)) {
+        terminalProcessByte(byte);
+
+        if (commandReady) {
+            handleCommand(commandBuffer);
+            commandReady = false;
+        }
     }
 }
 
-static void handleReceivedByte(uint8_t rxByte) {
+static void terminalProcessByte(uint8_t rxByte) {
     if (rxByte == '\r' || rxByte == '\n') {
         rxBuffer[rxIndex] = '\0';
 
