@@ -3,6 +3,10 @@
 //
 
 #include "app.h"
+
+#include <cstdio>
+
+#include "CommandParser.h"
 #include "Led.h"
 #include "LedMode.h"
 #include "Terminal.h"

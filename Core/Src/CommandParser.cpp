@@ -5,6 +5,8 @@
 #include "LedMode.h"
 #include "UartUtils.h"
 
+extern "C" I2C_HandleTypeDef hi2c1;
+
 void printLedMode() {
     uartPrint("Current Mode: ");
     uartPrint(ledModeMapper(getLedMode()));
@@ -18,6 +20,7 @@ void handleCommand(const char* command) {
         uartPrint("/mode\r\n");
         uartPrint("/uptime\r\n");
         uartPrint("/reset\r\n");
+        uartPrint("/modules\r\n");
         uartPrint("> ");
     } else if (strcmp(command, "/ping") == 0) {
         uartPrint("pong\r\n");
@@ -53,6 +56,15 @@ void handleCommand(const char* command) {
         snprintf(msg, sizeof(msg), "Uptime: %lu s\r\n", static_cast<unsigned long>(uptimeSeconds));
 
         uartPrint(msg);
+        uartPrint("> ");
+    } else if (strcmp(command, "/modules") == 0) {
+        HAL_StatusTypeDef ret = HAL_I2C_IsDeviceReady(&hi2c1, (0x68 << 1), 1, 100);
+        if (ret == HAL_OK) {
+            uartPrint("\rI2C: OK\r\n");
+        } else {
+            uartPrint("\rI2C: ERROR\r\n");
+        }
+
         uartPrint("> ");
     } else if (strcmp(command, "/reset") == 0) {
         uartPrint("Resetting...\r\n");
