@@ -40,6 +40,7 @@ add_executable(${CMAKE_PROJECT_NAME}
         Core/Src/Terminal.cpp
         Core/Src/CommandParser.cpp
         Core/Src/RingBuffer.cpp
+        Core/Src/mpu6050.cpp
 )
 
 # Add STM32CubeMX generated sources

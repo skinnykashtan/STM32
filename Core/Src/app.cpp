@@ -11,6 +11,7 @@
 #include "LedMode.h"
 #include "Terminal.h"
 #include "UartUtils.h"
+#include "mpu6050.h"
 
 extern "C" {
 #include "main.h"
@@ -41,7 +42,15 @@ extern "C" void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 
 uint32_t last_time;
 
+extern "C" I2C_HandleTypeDef hi2c1;
+
 void app_init(void) {
+    if (mpu6050_init(&hi2c1, 0x68)) {
+        uartPrint("\rDziala\r\n");
+    } else {
+        uartPrint("\rNie dziala\r\n");
+    }
+
     HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
     HAL_Delay(200);
     HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
